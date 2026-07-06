@@ -43,6 +43,6 @@ VALIDATE $? "Allowing remote connections to mongodb"
 
 systemctl restart mongod
 
-ALIDATE $? "Mongodb restarted"
+VALIDATE $? "Mongodb restarted"
 
 
