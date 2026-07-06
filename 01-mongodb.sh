@@ -24,6 +24,7 @@ VALIDATE(){
         exit 1
     else
         echo -e "$TIMESTAMP [INFO] $2 ... $G FAILURE $N" | tee -a $LOGS_FILE
+    fi
 
 }
 
