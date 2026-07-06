@@ -3,7 +3,7 @@
 LOGS_FOLDER="/var/log/roboshop"
 sudo mkdir -p $LOGS_FOLDER
 sudo chown -R ec2-user:ec2-user $LOGS_FOLDER
-sudo chmod -r 755 $LOGS_FOLDER
+sudo chmod -R 755 $LOGS_FOLDER
 LOGS_FILE="$LOGS_FOLDER/$0.log"
 
 USERID=$(id -u)
@@ -31,5 +31,5 @@ VALIDATE(){
 cp mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "Adding Mongo repo"
 
-dnf install mongodb-0=org -y &>> $LOGS_FILE
+dnf install mongodb-org -y &>> $LOGS_FILE
 VALIDATE $? "Installing MongoDB"
