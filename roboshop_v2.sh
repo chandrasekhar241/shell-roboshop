@@ -3,24 +3,23 @@
 AMI_ID="ami-0220d79f3f480ecf5"
 ZONE_ID="Z08591453NE7S2K54TI4E"
 DOMAIN_NAME="daws90saws.shop"
-USERID=$(id -u)
 R="\e[31m"
-Y="\e[33m"
 G="\e[32m"
+Y="\e[33m"
 N="\e[0m"
-TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
 
+### Validation ###
 if [ $# -lt 2 ]; then
     echo -e "$R ERROR:: Atleast 2 arguments required $N"
-    echo  "USAGE : $0 [create/delete] [instance1] [instance2...]"
+    echo "USAGE: $0 [create/delete] [instance1] [instance2...]"
     exit 1
 fi
 
 ACTION=$1
 shift # first argument will be removed
 
-if [ $ACTION != "create" ] && [ $ACTION != "delete" ]; then
-    echo "ERROR:: First argument must be either create or delete"
+if [ "$ACTION" != "create" ] && [ "$ACTION" != "delete" ]; then
+    echo -e "$R ERROR:: First argument must be either create or delete $N"
     echo "USAGE: $0 [create/delete] [instance1] [instance2...]"
     exit 1
 fi
@@ -35,20 +34,24 @@ do
     INSTANCE_ID=$(get_instance_id $instance)
     if [ $ACTION == "create" ]; then
         if [ $INSTANCE_ID == "None" ]; then
-            echo "Launching instance :robosho-$instance"
+            echo "Launching Instance: roboshop-$instance"
             INSTANCE_ID=$( aws ec2 run-instances \
             --image-id $AMI_ID \
             --instance-type t3.micro \
             --security-groups "roboshop-common" "roboshop-$instance" \
             --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=roboshop-$instance}]" \
             --query 'Instances[0].InstanceId' \
-            --output text
+            --output text 
             )
-            echo "Launched Instance : $INSTANCE_ID"
+            echo "Launched Instance: $INSTANCE_ID"
+            aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+            echo "Instance is running: $INSTANCE_ID"
+
         else
             echo "roboshop-$instance already running: $INSTANCE_ID"
-        fi   
-            # update R53 record
+        fi
+
+        # update R53 record
         if [ $instance == "frontend" ]; then
             IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
@@ -84,15 +87,13 @@ do
                 ]
             }
         '
-        echo "updated Route 53 record for: $instance"
+        echo "updated R53 record for: $instance"
     else
         if [ $INSTANCE_ID == "None" ]; then
-            echo "$instance already destroyed, nothing to do.."
+            echo "$instance already destroyed, nothing to do..."
         else
             aws ec2 terminate-instances --instance-ids $INSTANCE_ID
             echo "Terminating Instance: $instance"
         fi
-
     fi
 done
-
