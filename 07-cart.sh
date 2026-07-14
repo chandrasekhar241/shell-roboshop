@@ -52,7 +52,6 @@ VALIDATE $? "Removed cart zip"
 mkdir -p /app &>> $LOGS_FILE
 VALIDATE $? "Creating app directory"
 
-rm -rf 
 curl -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>> $LOGS_FILE
 cd /app 
 unzip /tmp/cart.zip &>> $LOGS_FILE

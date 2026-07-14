@@ -52,7 +52,6 @@ VALIDATE $? "Removed catalogue zip"
 mkdir -p /app &>> $LOGS_FILE
 VALIDATE $? "Creating app directory"
 
-rm -rf 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>> $LOGS_FILE
 cd /app 
 unzip /tmp/catalogue.zip &>> $LOGS_FILE
