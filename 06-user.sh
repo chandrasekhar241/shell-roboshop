@@ -36,7 +36,7 @@ dnf install nodejs -y &>> $LOGS_FILE
 VALIDATE &? "Installing NodeJS.20"
 
 id roboshop &>> $LOGS_FILE
-if [ $? -ne 0 ]; then
+if [ &? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
     VALIDATE &? "Creating roboshop system user"
 else 
@@ -44,47 +44,30 @@ else
 fi
 
 rm -rf /app
-VALIDATE $? "Removing existing code"
+VALIDATE &? "Removing existing code"
 
-rm -rf /tmp/catalogue.zip
-VALIDATE $? "Removed catalogue zip"
+rm -rf /tmp/user.zip
+VALIDATE &? "Removed catalogue zip"
 
 mkdir -p /app &>> $LOGS_FILE
-VALIDATE $? "Creating app directory"
+VALIDATE &? "Creating app directory"
 
 rm -rf 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>> $LOGS_FILE
+curl -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>> $LOGS_FILE
 cd /app 
-unzip /tmp/catalogue.zip &>> $LOGS_FILE
+unzip /tmp/user.zip &>> $LOGS_FILE
 
-VALIDATE $? "Downloading and extracted catalogue code "
+VALIDATE &? "Downloading and extracted user code "
 
 npm install &>> $LOGS_FILE
 
-VALIDATE $? "installing dependencies"
+VALIDATE &? "installing dependencies"
 
-cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
+cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service
 
-VALIDATE $? "Created system service"
+VALIDATE &? "Created system service"
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
-
-VALIDATE $? "Added mongo repo"
-
-dnf install mongodb-mongosh -y &>> $LOGS_FILE
-
-VALIDATE $? "Installing MongoDB client"
-
-INDEX=$(mongosh --host mongodb.daws90s.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
-
-if [ $INDEX -lt 0 ]; then
-    mongosh --host mongodb.daws90s.shop </app/db/master-data.js &>>$LOGS_FILE
-    VALIDATE $? "Load product"
-else
-    echo -e "Products already loaded .. $Y SKIPPING $N"
-fi
-
-systemctl enable catalogue &>>$LOGS_FILE
-systemctl restart catalogue &>>$LOGS_FILE
-VALIDATE $? "Restarting catalogue"
+systemctl enable user &>>$LOGS_FILE
+systemctl restart user &>>$LOGS_FILE
+VALIDATE $? "Restarting user"
 
