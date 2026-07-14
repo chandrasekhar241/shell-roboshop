@@ -20,7 +20,7 @@ if [ $USERID -ne 0 ]; then
 fi
 
 VALIDATE(){
-    if [ $1 -ne 0 ]; then
+    if [ $1 != 0 ]; then
         echo -e "$TIMESTAMP [ERROR] $2 ... $R FAILURE $N" | tee -a $LOGS_FILE
         exit 1
     else
@@ -33,12 +33,12 @@ dnf module disable nodejs -y &>> $LOGS_FILE
 dnf module enable nodejs:20 -y &>> $LOGS_FILE
 dnf install nodejs -y &>> $LOGS_FILE
 
-VALIDATE &? "Installing NodeJS.20"
+VALIDATE $? "Installing NodeJS.20"
 
 id roboshop &>> $LOGS_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-    VALIDATE &? "Creating roboshop system user"
+    VALIDATE $? "Creating roboshop system user"
 else 
     echo -e "system user roboshop already created..$Y SKIPPING $N"
 fi
@@ -78,7 +78,7 @@ VALIDATE $? "Installing MongoDB client"
 INDEX=$(mongosh --host mongodb.daws90s.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 
 if [ $INDEX -lt 0 ]; then
-    mongosh --host mongodb.daws90s.shop </app/db/master-data.js &>>$LOGS_FILE
+    mongosh --host mongodb.daws90saws.shop </app/db/master-data.js &>>$LOGS_FILE
     VALIDATE $? "Load product"
 else
     echo -e "Products already loaded .. $Y SKIPPING $N"

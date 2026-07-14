@@ -36,7 +36,7 @@ dnf install nodejs -y &>> $LOGS_FILE
 VALIDATE &? "Installing NodeJS.20"
 
 id roboshop &>> $LOGS_FILE
-if [ &? -ne 0 ]; then
+if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
     VALIDATE &? "Creating roboshop system user"
 else 
@@ -44,28 +44,26 @@ else
 fi
 
 rm -rf /app
-VALIDATE &? "Removing existing code"
+VALIDATE $? "Removing existing code"
 
 rm -rf /tmp/user.zip
-VALIDATE &? "Removed catalogue zip"
+VALIDATE $? "Removed user zip"
 
 mkdir -p /app &>> $LOGS_FILE
-VALIDATE &? "Creating app directory"
+VALIDATE $? "Creating app directory"
 
 rm -rf 
-curl -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>> $LOGS_FILE
+curl -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>> $LOGS_FILE
 cd /app 
 unzip /tmp/user.zip &>> $LOGS_FILE
 
-VALIDATE &? "Downloading and extracted user code "
+VALIDATE $? "Downloading and extracted user code "
 
 npm install &>> $LOGS_FILE
 
-VALIDATE &? "installing dependencies"
+VALIDATE $? "installing dependencies"
 
 cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service
-
-VALIDATE &? "Created system service"
 
 systemctl enable user &>>$LOGS_FILE
 systemctl restart user &>>$LOGS_FILE
