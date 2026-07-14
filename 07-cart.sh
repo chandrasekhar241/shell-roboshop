@@ -49,20 +49,19 @@ VALIDATE $? "Removing existing code"
 rm -rf /tmp/cart.zip
 VALIDATE $? "Removed cart zip"
 
-mkdir -p /app &>> $LOGS_FILE
+mkdir -p /app  &>>$LOGS_FILE
 VALIDATE $? "Creating app directory"
 
-curl -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>> $LOGS_FILE
+curl -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip  &>>$LOGS_FILE
 cd /app 
-unzip /tmp/cart.zip &>> $LOGS_FILE
+unzip /tmp/cart.zip &>>$LOGS_FILE
+VALIDATE $? "Downloaded and extracted cart code"
 
-VALIDATE $? "Downloading and extracted cart code "
-
-npm install &>> $LOGS_FILE
-
-VALIDATE $? "installing dependencies"
+npm install  &>>$LOGS_FILE
+VALIDATE $? "Installing dependencies"
 
 cp $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service
+VALIDATE $? "Created systemctl service"
 
 systemctl enable cart &>>$LOGS_FILE
 systemctl restart cart &>>$LOGS_FILE
