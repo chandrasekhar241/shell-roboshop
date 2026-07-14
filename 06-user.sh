@@ -33,7 +33,7 @@ dnf module disable nodejs -y &>> $LOGS_FILE
 dnf module enable nodejs:20 -y &>> $LOGS_FILE
 dnf install nodejs -y &>> $LOGS_FILE
 
-VALIDATE &? "Installing NodeJS.20"
+VALIDATE $? "Installing NodeJS.20"
 
 id roboshop &>> $LOGS_FILE
 if [ $? -ne 0 ]; then
