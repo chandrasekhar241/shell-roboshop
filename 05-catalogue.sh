@@ -75,7 +75,7 @@ dnf install mongodb-mongosh -y &>> $LOGS_FILE
 
 VALIDATE $? "Installing MongoDB client"
 
-INDEX=$(mongosh --host mongodb.daws90s.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+INDEX=$(mongosh --host mongodb.daws90saws.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 
 if [ $INDEX -lt 0 ]; then
     mongosh --host mongodb.daws90saws.shop </app/db/master-data.js &>>$LOGS_FILE
