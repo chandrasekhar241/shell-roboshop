@@ -27,7 +27,7 @@ if [ "$ACTION" != "create" ] && [ "$ACTION" != "delete" ]; then
     exit 1
 fi
 
-if [ "$1" =="all" ]; then
+if [ "$1" == "all" ]; then
     if [ "$Action" == "create" ]; then
         INSTANCES="$ALL_INSTANCES"
     else
